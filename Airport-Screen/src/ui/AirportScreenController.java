@@ -3,18 +3,28 @@ package ui;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.Date;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import model.Airport;
 import model.Airport.SortingsTypes;
 import model.Flight;
@@ -39,9 +49,12 @@ public class AirportScreenController {
 	@FXML
 	private TextField tfNumberFlights;
 
-	
+
 	@FXML
-    private Label lbtimeSystem;
+	private Label lbtimeSystem;
+
+	@FXML
+	private Label lbInfoSearch;
 
 	private ObservableList<Flight> list;
 
@@ -163,7 +176,7 @@ public class AirportScreenController {
 		tv.setItems(list);
 		lbtimeSystem.setText(totalTime + " ms were needed to sort.");
 	}
-	
+
 	@FXML
 	void sortDate(ActionEvent event) {
 		long initTime = System.currentTimeMillis();
@@ -174,6 +187,84 @@ public class AirportScreenController {
 		tv.setItems(list);
 		lbtimeSystem.setText(totalTime + " ms were needed to sort.");
 	}
+	 @FXML
+	    void searchAirline(ActionEvent event) {
+	    	askForInput(SortingsTypes.AIRLINE);
+	    }
+
+	    @FXML
+	    void searchGate(ActionEvent event) {
+	    	askForInput(SortingsTypes.GATE);
+	    }
+
+	
+	    @FXML
+	    void searchDestination(ActionEvent event) {
+	    	askForInput(SortingsTypes.DESTINATION);
+	    }
+
+	    @FXML
+	    void searchFlightNumber(ActionEvent event) {
+	    	askForInput(SortingsTypes.FLIGHT_NUMBER);
+	    }
+
+
+	 void askForInput(SortingsTypes s) {
+	    	Stage dialog = new Stage();
+	        VBox dialogVbox = new VBox(20);
+	        Label title = new Label();
+	        title.setText("Please input the searched ");
+	        switch(s) {
+			case AIRLINE:
+				title.setText(title.getText() + "airline name.");
+				break;
+			case GATE:
+				title.setText(title.getText() + "boarding gate.");
+				break;
+			case DESTINATION:
+				title.setText(title.getText() + "destination city name.");
+				break;
+			case FLIGHT_NUMBER:
+				title.setText(title.getText() + "flight number.");
+				break;
+			case TIME:
+				title.setText(title.getText() + "date in YYYY-MM-AA HH:MM AM/PM format.");
+				break;
+	        }
+	        TextField inputTF = new TextField();
+	        inputTF.setMaxWidth(150);
+	        Button search = new Button("Search");
+	        search.setOnAction(new EventHandler<ActionEvent>() {
+				public void handle(ActionEvent arg0) {
+					try {
+						String msg = inputTF.getText();
+						long initTime = System.currentTimeMillis();
+						List<Flight> found = airport.search(s, msg);
+						long totalTime = System.currentTimeMillis() - initTime;
+						lbtimeSystem.setText(totalTime + " ms were needed to search.");
+						ObservableList<Flight> list = obsevableFlights();
+						tv.setItems(list);
+					}catch(NumberFormatException | IndexOutOfBoundsException e) {
+						Alert errorMessage = new Alert(AlertType.ERROR);
+			    		errorMessage.setContentText("Please write the date in YYYY-MM-AA HH:MM AM/PM format.");
+			    		errorMessage.show();
+					}finally {
+						dialog.close();
+					}
+				}
+				
+	        	
+	        });
+	        dialogVbox.setPadding(new Insets(14,14,14,14));
+	        dialogVbox.setSpacing(8);
+	        dialogVbox.setAlignment(Pos.CENTER);
+	        dialogVbox.getChildren().addAll(title,inputTF,search);
+	        Scene dialogScene = new Scene(dialogVbox, 500, 150);
+	        dialog.setScene(dialogScene);
+	        dialog.setTitle("Input");
+	        dialog.setResizable(false);
+	        dialog.show();
+	    }
 
 
 

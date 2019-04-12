@@ -9,6 +9,7 @@ import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -254,5 +255,105 @@ public class Airport {
 		});
 
 	}
+
+	public List<Flight> search(SortingsTypes criteria, String parameter) throws NumberFormatException, IndexOutOfBoundsException{
+		List<Flight> found = null;
+		switch(criteria) {
+		case AIRLINE:
+			found = searchAirline(parameter);
+			break;
+		case DESTINATION:
+			found = searchDestination(parameter);
+			break;
+		case FLIGHT_NUMBER:
+			int fn = Integer.parseInt(parameter);
+			found = searchFN(fn);
+			break;
+		case GATE:
+			found = searchGate(parameter);
+			break;			
+		}
+		return found;
+
+	}
+
+	public List<Flight> searchAirline(String al){
+		List<Flight> found = new ArrayList<Flight>();
+		Comparator<Flight> searcher = new Comparator<Flight>() {
+			public int compare(Flight o1, Flight o2) {
+				return o1.compareToAirline(o2);
+			}
+		};
+		Flight searched = new Flight(null, "",al, 0 , "", "");
+		int length = flights.size();
+		for(int i = 0; i<length; i++) {
+			Flight current = flights.get(i);
+			if(searcher.compare(current, searched) == 0) {
+				found.add(current);
+			}
+		}
+		return found;
+	}
+
+	public List<Flight> searchDestination(String city) {
+		int low=0;
+		int high = flights.size()-1;
+		int r=-1;
+		while(low<=high) {
+			int mid=(low+high)/2;
+			if(flights.get(mid).getDestination().compareTo(city)<0) {
+				low = mid+1;
+			}else if(flights.get(mid).getDestination().compareTo(city)>0) {
+				high = mid-1;
+			}else if(flights.get(mid).getDestination().compareTo(city)==0){
+				r=mid;
+				return r;
+			}
+		}
+
+		return -1;
+	}
+
+	public List<Flight> searchFN(int flightNumber) {
+		sortFN();
+		List<Flight> found = new ArrayList<Flight>();
+		Flight searched = new Flight(null, "","", flightNumber , "", "");
+		int length = flights.size();
+		int low = 0;
+		int high = length-1;
+		boolean finished = false;
+		while(low <= high && !finished) {
+			int mid = (high+low)/2;
+			Flight foundF = flights.get(mid);
+			if(searched.compareToFN(foundF) == 0) {
+				found.add(foundF);
+				finished = true;
+			}else if(searched.compareToFN(foundF) < 0) {
+				high = mid-1;
+			}else if(searched.compareToFN(foundF) > 0) {
+				low = mid+1;
+			}
+		}
+		return found;
+	}
+
+	public List<Flight> searchGate(String g){
+		List<Flight> found = new ArrayList<Flight>();
+		Comparator<Flight> searcher = new Comparator<Flight>() {
+			public int compare(Flight o1, Flight o2) {
+				return o1.compareToGate(o2);
+			}
+		};
+		Flight searched = new Flight(null, "","", 0 , "", g);
+		int length = flights.size();
+		for(int i = 0; i<length; i++) {
+			Flight current = flights.get(i);
+			if(searcher.compare(current, searched) == 0) {
+				found.add(current);
+			}
+		}
+		return found;
+	}
+
 
 }

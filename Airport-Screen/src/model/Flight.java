@@ -24,9 +24,7 @@ public class Flight implements Comparable<Flight>{
 
 
 
-	public String toString() {
-		return "a";
-	}
+	
 	public LocalDate getDate() {
 		return date;
 	}

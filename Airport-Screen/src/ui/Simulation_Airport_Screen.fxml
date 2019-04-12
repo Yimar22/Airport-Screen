@@ -7,6 +7,7 @@
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -51,12 +52,26 @@
                         </Menu>
                         <Menu mnemonicParsing="false" text="Search flights">
                            <items>
-                              <MenuItem mnemonicParsing="false" text="Unspecified Action" />
-                              <MenuItem mnemonicParsing="false" text="Unspecified Action" />
-                              <MenuItem mnemonicParsing="false" text="Unspecified Action" />
-                              <MenuItem mnemonicParsing="false" text="Unspecified Action" />
-                              <MenuItem mnemonicParsing="false" text="Unspecified Action" />
-                              <MenuItem mnemonicParsing="false" text="Unspecified Action" />
+                              <MenuItem fx:id="searchAirline" mnemonicParsing="false" text="Search for airlines">
+                                 <graphic>
+                                    <TextField fx:id="searchTextField" />
+                                 </graphic>
+                              </MenuItem>
+                              <MenuItem fx:id="searchFlightNumber" mnemonicParsing="false" text="Search for flight number">
+                                 <graphic>
+                                    <TextField fx:id="searchTextField" />
+                                 </graphic>
+                              </MenuItem>
+                              <MenuItem fx:id="searchDestination" mnemonicParsing="false" text="Search for destination">
+                                 <graphic>
+                                    <TextField fx:id="searchTextField" />
+                                 </graphic>
+                              </MenuItem>
+                              <MenuItem fx:id="searchGate" mnemonicParsing="false" text="Search for gate">
+                                 <graphic>
+                                    <TextArea fx:id="searchTextField" prefHeight="200.0" prefWidth="200.0" />
+                                 </graphic>
+                              </MenuItem>
                            </items>
                         </Menu>
                   </items>
@@ -78,6 +93,7 @@
             <Label layoutX="14.0" layoutY="10.0" text="How many flights do you want to see?" />
             <Button layoutX="260.0" layoutY="6.0" mnemonicParsing="false" onAction="#generateFlights" text="Generate" />
             <Label fx:id="lbtimeSystem" layoutX="408.0" layoutY="10.0" />
+            <Label fx:id="lbInfoSearch" layoutX="429.0" layoutY="10.0" />
          </children>
       </AnchorPane>
    </bottom>
