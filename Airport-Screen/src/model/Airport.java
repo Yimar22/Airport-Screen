@@ -2,15 +2,17 @@ package model;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Comparator;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
+
+import model.Flight;
 
 public class Airport {
 
@@ -31,9 +33,6 @@ public class Airport {
 		currentSortType = SortingsTypes.TIME;
 	}
 
-	public void  SearchFlights() {
-
-	}
 
 	public void generateFlights(int flightsNumber) throws IOException{
 		flights.clear();
@@ -54,7 +53,7 @@ public class Airport {
 		sort();
 
 	}
-	@SuppressWarnings("deprecation")
+
 	public LocalDate generateDate() {
 
 		long minDay = LocalDate.of(2018, 1, 1).toEpochDay();
@@ -68,12 +67,13 @@ public class Airport {
 		String msg = "";
 		LocalTime medium = LocalTime.of(12,0);
 		Random random = new Random();
-		for (int i = 0; i < 10; i++) {
-			LocalTime time = LocalTime.of(random.nextInt(13), random.nextInt(13));
+		for (int i = 0; i < 25; i++) {
+			LocalTime time = LocalTime.of(random.nextInt(23), random.nextInt(23));
 			if(time.compareTo(medium)>0) {
-				msg = time + "AM";
-			}else {
+				time = time.minus(12, ChronoUnit.HOURS);
 				msg = time + "PM";
+			}else {
+				msg = time + "AM";
 			}
 		}
 		return msg;
@@ -196,19 +196,63 @@ public class Airport {
 
 	}
 	public void sortAirline() {
-
+		int size = flights.size();
+		for (int i = 0; i<size; i++) {
+			Flight toInsert = flights.get(i);
+			boolean ended = false;
+			for(int j = i; j>0 && !ended; j--) {
+				Flight current = flights.get(j-1);
+				if(current.compareToAirline(toInsert) > 0) {
+					flights.set(j, current);
+					flights.set(j-1, toInsert);
+				}else {
+					ended = true;
+				}
+			}
+		}
 	}
 
 	public void sortDestination() {
-
+		int length = flights.size();
+		for (int i = 0; i < length-1; i++) {
+			int min = i;
+			for (int j = i+1; j < length; j++) {
+				Flight minimum = flights.get(min);
+				Flight current = flights.get(j);
+				if(minimum.compareToDestination(current)>0) {
+					min = j;
+				}
+			}
+			Flight temp = flights.get(i);
+			flights.set(i, flights.get(min));
+			flights.set(min, temp);
+		}
 	}
 	public void sortFN() {
-
+		int length = flights.size();
+		for (int i = 0; i < length-1; i++) {
+			int min = i;
+			for (int j = i+1; j < length; j++) {
+				Flight minimum = flights.get(min);
+				Flight current = flights.get(j);
+				if(minimum.compareToFN(current)>0) {
+					min = j;
+				}
+			}
+			Flight temp = flights.get(i);
+			flights.set(i, flights.get(min));
+			flights.set(min, temp);
+		}
 	}
+
 	public void sortGates() {
+		flights.sort(new Comparator<Flight>() {
+			public int compare(Flight o1, Flight o2) {
+				return o1.compareToGate(o2);
+			}
+
+		});
 
 	}
 
-
-	//fechaInicio.getYear(), fechaInicio.getMonthValue(), fechaInicio.getDayOfMonth(), fechaFinal.getYear(), fechaFinal.getMonthValue(), fechaFinal.getDayOfMonth()
 }

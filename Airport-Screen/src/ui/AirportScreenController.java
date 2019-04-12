@@ -16,6 +16,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import model.Airport;
+import model.Airport.SortingsTypes;
 import model.Flight;
 
 public class AirportScreenController {
@@ -27,7 +28,7 @@ public class AirportScreenController {
 	private URL location;
 
 	@FXML
-    private BorderPane bpPane;
+	private BorderPane bpPane;
 
 	@FXML
 	private TableView<Flight> tv;
@@ -38,16 +39,24 @@ public class AirportScreenController {
 	@FXML
 	private TextField tfNumberFlights;
 
+	
+	@FXML
+    private Label lbtimeSystem;
+
 	private ObservableList<Flight> list;
 
 	private Airport airport;
 
+
 	@FXML
 	public void generateFlights(ActionEvent event) throws IOException {
+		long initTime = System.currentTimeMillis();
 		int flightsNumber = Integer.parseInt(tfNumberFlights.getText());
 		airport.generateFlights(flightsNumber);
+		long totalTime = System.currentTimeMillis() - initTime;
 		ObservableList<Flight> list = obsevableFlights();
 		tv.setItems(list);
+		lbtimeSystem.setText(totalTime + " ms were needed to sort.");
 	}
 
 	@FXML
@@ -99,7 +108,73 @@ public class AirportScreenController {
 
 		return list;
 	}
+
+	@FXML
+	void sortAirline(ActionEvent event) {
+		long initTime = System.currentTimeMillis();
+		airport.setSortingsTypes(SortingsTypes.AIRLINE);
+		airport.sort();
+		long totalTime = System.currentTimeMillis() - initTime;
+		ObservableList<Flight> list = obsevableFlights();
+		tv.setItems(list);
+		lbtimeSystem.setText(totalTime + " ms were needed to sort.");
+	}
+
+	@FXML
+	void sortGate(ActionEvent event) {
+		long initTime = System.currentTimeMillis();
+		airport.setSortingsTypes(SortingsTypes.GATE);
+		airport.sort();
+		long totalTime = System.currentTimeMillis() - initTime;
+		ObservableList<Flight> list = obsevableFlights();
+		tv.setItems(list);
+		lbtimeSystem.setText(totalTime + " ms were needed to sort.");
+	}
+
+	@FXML
+	void sortDestination(ActionEvent event) {
+		long initTime = System.currentTimeMillis();
+		airport.setSortingsTypes(SortingsTypes.DESTINATION);
+		airport.sort();
+		long totalTime = System.currentTimeMillis() - initTime;
+		ObservableList<Flight> list = obsevableFlights();
+		tv.setItems(list);
+		lbtimeSystem.setText(totalTime + " ms were needed to sort.");
+	}
+
+	@FXML
+	void sortFlightNumber(ActionEvent event) {
+		long initTime = System.currentTimeMillis();
+		airport.setSortingsTypes(SortingsTypes.FLIGHT_NUMBER);
+		airport.sort();
+		long totalTime = System.currentTimeMillis() - initTime;
+		ObservableList<Flight> list = obsevableFlights();
+		tv.setItems(list);
+		lbtimeSystem.setText(totalTime + " ms were needed to sort.");
+	}
+
+	@FXML
+	void sortTime(ActionEvent event) {
+		long initTime = System.currentTimeMillis();
+		airport.setSortingsTypes(SortingsTypes.TIME);
+		airport.sort();
+		long totalTime = System.currentTimeMillis() - initTime;
+		ObservableList<Flight> list = obsevableFlights();
+		tv.setItems(list);
+		lbtimeSystem.setText(totalTime + " ms were needed to sort.");
+	}
 	
-	
+	@FXML
+	void sortDate(ActionEvent event) {
+		long initTime = System.currentTimeMillis();
+		airport.setSortingsTypes(SortingsTypes.DATE);
+		airport.sort();
+		long totalTime = System.currentTimeMillis() - initTime;
+		ObservableList<Flight> list = obsevableFlights();
+		tv.setItems(list);
+		lbtimeSystem.setText(totalTime + " ms were needed to sort.");
+	}
+
+
 
 }

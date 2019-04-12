@@ -99,4 +99,37 @@ public class Flight implements Comparable<Flight>{
 	}
 
 
+
+	public int compareToDestination(Flight current) {
+		return destination.compareTo(current.getDestination());
+	}
+
+
+
+	public int compareToFN(Flight o2) {
+		int msg = 0;
+		if(flightNumber < o2.getFlightNumber()) {
+			msg = -1;
+		}else if(flightNumber > o2.getFlightNumber()) {
+			msg = 1;
+		}else {
+			msg = 0;
+		}
+		return msg;
+	}
+
+
+
+	public int compareToAirline(Flight toInsert) {
+		return airline.compareTo(toInsert.getAirline());
+	}
+
+
+
+	public int compareToGate(Flight current) {
+		return gate.compareTo(current.getGate());
+
+	}
+
+
 }
